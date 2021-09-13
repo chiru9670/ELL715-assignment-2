@@ -1,0 +1,8 @@
+# Ignore all
+/*
+# Ignore all subdirectories
+/*/
+#except these files
+!/*.m
+!/.gitignore
+!/images/
