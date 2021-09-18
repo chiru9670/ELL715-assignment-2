@@ -6,6 +6,9 @@ img = rgb2gray(imread('E:\Documents\DIP\lenna.png'));
 %% Add noise
 SNR_vals = [0 10 20 30 60]; % in dB
 sigma_i = std2(img);    %std dev of img
+gavg = ones(5, 3);      %gaussian mse
+spavg = ones(5, 3);     %sp mse
+i = 1;
 
 for snr=SNR_vals
    sigma_n = sigma_i/(10^(snr/20));
@@ -18,12 +21,18 @@ for snr=SNR_vals
    imwrite(spnoisy, sprintf("sp_noise_snr%d.png", snr));
    
    % applying filters
+   j = 1;
    for size=[5,7,9]
       filter = ones(size)/size^2;
-      gfiltered = uint8(conv2(gnoisy, filter));
-      spfiltered = uint8(conv2(spnoisy, filter));
+      gfiltered = uint8(conv2(gnoisy, filter, 'same'));
+      spfiltered = uint8(conv2(spnoisy, filter, 'same'));
       imwrite(gfiltered, sprintf("filtered_gaussian_noise_snr%d_filter_size%d.png", snr, size));
       imwrite(spfiltered, sprintf("filtered_sp_noise_snr%d_filter_size%d.png", snr, size));
+      
+      gavg(i, j) = mean2((img - gfiltered).^2);
+      spavg(i, j) = mean2((img - spfiltered).^2);
+      
+      j=j+1;
    end
    
    gnoisy_edge = edge(gnoisy, 'Canny');
@@ -47,5 +56,7 @@ for snr=SNR_vals
    median_filtered_sp = medfilt2(spnoisy);
    median_edge_sp = edge(median_filtered_sp, 'Canny');
    imwrite(median_edge_sp, sprintf("edges_by_canny_after_median_sp_noise_snr%d.png", snr));
+   
+   i=i+1;
 end
 
