@@ -3,8 +3,6 @@ close all
 
 img = rgb2gray(imread('images/buildings.png'));
 
-%TODO what about "Use different size operators to find the suitable size."
-
 %% 2a. Laplacian
 Lap_filter_x = [0 0 0; 1 -2 1; 0 0 0];
 Lap_filter_y = Lap_filter_x.';
