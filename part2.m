@@ -45,5 +45,14 @@ sob_edges_y = conv2(img, sob_y);
 sob_edges_joint = uint8(sqrt(sob_edges_x.^2 + sob_edges_y.^2));
 imwrite(sob_edges_joint, "sobels.png");
 
-%% Highboost filtering
-% this is a technique for sharpening images tho...(slide 27, lec 5)
+%% Highboost filtering (best filter size-9)
+for size = [3, 5, 7, 9, 11, 13, 15]
+    mask = 1/(size*size) * ones(size);
+    smooth_img = uint8(conv2(img, mask, 'same'));
+
+    k = uint8(255 / max(img - smooth_img, [], 'all'));
+
+    % for better image use k = 20 or more
+    high_boost_img = uint8(k*(img - smooth_img));
+    imwrite(high_boost_img, sprintf("high_boost_size%d.png", size));
+end
